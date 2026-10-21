@@ -1,546 +1,561 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <title>Aishu's Portfolio</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aishwarya S</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#DCE8E0; --ink:#1D2A24; --muted:#56675E; --line:#B8CABE; --panel:#F8FBF9; --accent:#5B3FC4; --accent-ink:#FFFFFF; --chip:#E6EEE9;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141C22; --ink:#E9EEF0; --muted:#9FB0B6; --line:#2F3E46; --panel:#1A242B; --accent:#A996FF; --accent-ink:#17122E; --chip:#24313A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141C22; --ink:#E9EEF0; --muted:#9FB0B6; --line:#2F3E46; --panel:#1A242B; --accent:#A996FF; --accent-ink:#17122E; --chip:#24313A;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent);font-weight:500;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+#scene{position:fixed;inset:0}
+#scene canvas{display:block;touch-action:none}
 
-    <!-- Favicon -->
-   <link rel="icon" href="img/iconnew.png" type="image/png">
-    
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"> 
+.intro{position:fixed;top:0;left:0;z-index:6;padding:calc(env(safe-area-inset-top,0px) + 22px) 26px 0;max-width:30rem;pointer-events:none;transition:opacity .35s}
+.intro h1{font-weight:800;font-size:clamp(1.9rem,4.4vw,3.2rem);line-height:1;letter-spacing:-0.035em;margin:0 0 .35em}
+.intro p{margin:0;color:var(--muted)}
+body.panel-open .intro{opacity:0}
 
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
-    <link rel="stylesheet" href="css/font-mfizz/font-mfizz.css">
+#labels{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.hot{position:absolute;left:0;top:0;pointer-events:auto;display:flex;align-items:center;gap:7px;
+  background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:.32em .8em .32em .45em;
+  font-size:.82rem;font-weight:600;white-space:nowrap;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);transition:opacity .3s}
+.hot .ping{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 var(--accent);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.hot:hover,.hot.lit{border-color:var(--accent)}
+body.panel-open .hot{opacity:0;pointer-events:none}
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+.menu{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:8;
+  display:flex;gap:4px;padding:5px;background:var(--panel);border:1px solid var(--line);border-radius:999px;
+  box-shadow:0 10px 30px -12px rgba(0,0,0,.4);max-width:calc(100% - 24px);overflow-x:auto;scrollbar-width:none}
+.menu::-webkit-scrollbar{display:none}
+.menu button{border:0;background:transparent;border-radius:999px;padding:.5em .95em;font-size:.86rem;font-weight:500;white-space:nowrap}
+.menu button:hover{background:var(--chip)}
+.menu button[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+#panel{position:fixed;top:0;right:0;bottom:0;z-index:10;width:min(440px,100%);
+  padding:calc(env(safe-area-inset-top,0px) + 70px) 30px calc(env(safe-area-inset-bottom,0px) + 90px);
+  background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;
+  transform:translateX(102%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+body.panel-open #panel{transform:none}
+.close{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:20px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:.35em .95em;font-size:.86rem}
+.close:hover{border-color:var(--ink)}
+#panel .where{color:var(--accent);font-weight:600;font-size:.88rem;margin:0 0 .6em}
+#panel h2{font-weight:800;font-size:2rem;line-height:1.05;letter-spacing:-0.03em;margin:0 0 .35em}
+#panel h2:focus{outline:none}
+#panel .lede{color:var(--muted);margin:0 0 1.4em}
+.role{padding:1em 0;border-top:1px solid var(--line)}
+.role h3{font-size:1.02rem;margin:0}
+.role .when{color:var(--muted);font-size:.86rem;margin:.1em 0 .5em}
+.role ul{margin:0;padding-left:1.1em}
+.role li{margin:0 0 .4em}
+.chips{list-style:none;padding:0;margin:.3em 0 0;display:flex;flex-wrap:wrap;gap:6px}
+.chips li{background:var(--chip);border-radius:8px;padding:.2em .65em;font-size:.86rem}
+.links{display:flex;flex-direction:column;margin-top:.4em}
+.links a{padding:.7em 0;border-top:1px solid var(--line);text-decoration:none;display:flex;justify-content:space-between;gap:12px}
+.links a span{color:var(--muted);font-weight:400}
 
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+#fallback{display:none}
+body.no-gl{overflow:auto}
+body.no-gl #scene,body.no-gl #labels,body.no-gl .menu,body.no-gl #panel{display:none}
+body.no-gl .intro{position:static}
+body.no-gl #fallback{display:block;max-width:40rem;padding:0 26px 40px}
+#fallback section{padding:1.4em 0;border-top:1px solid var(--line)}
+
+@media (max-width:700px){
+  .intro{padding-left:18px;padding-right:18px}
+  .intro h1{font-size:1.8rem}
+  #panel{top:auto;left:0;width:100%;height:62%;border-left:0;border-top:1px solid var(--line);border-radius:22px 22px 0 0;
+    padding:54px 20px calc(env(safe-area-inset-bottom,0px) + 86px);transform:translateY(102%)}
+  .close{top:12px;right:16px}
+  #panel h2{font-size:1.6rem}
+}
+@media (prefers-reduced-motion: reduce){ #panel{transition:none} .hot .ping{animation:none} }
+</style>
 </head>
+<body>
+<div id="scene" aria-hidden="true"></div>
+<div id="labels"></div>
 
-<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="51">
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
+<div class="intro">
+  <h1>Aishwarya S</h1>
+  <p>Backend Engineer at Workhall. This is my desk. Click anything in the room to learn about me.</p>
+</div>
 
+<nav class="menu" id="menu" aria-label="Sections"></nav>
 
-    <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light fixed-top shadow py-lg-0 px-4 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
-        <!-- <a href="index.html" class="navbar-brand d-block d-lg-none">
-            <h1 class="text-primary fw-bold m-0">ProMan</h1>
-        </a> -->
-        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between py-4 py-lg-0" id="navbarCollapse">
-            <div class="navbar-nav ms-auto py-0">
-                <a href="#home" class="nav-item nav-link active">Home</a>
-                <a href="#skill" class="nav-item nav-link">Skills</a>
-                <a href="#service" class="nav-item nav-link">Achievements</a>
-            </div>
-            <div class="navbar-nav me-auto py-0">
-                <a href="#project" class="nav-item nav-link">My Works</a>
-            </div>
-        </div>
-    </nav>
-    <!-- Navbar End -->
+<aside id="panel" role="dialog" aria-labelledby="panel-title">
+  <button class="close" id="closeBtn" type="button">Back to room</button>
+  <div id="panelBody"></div>
+</aside>
 
+<main id="fallback"></main>
 
-    <!-- Header Start -->
-    <div class="container-fluid bg-light my-6 mt-0" id="home">
-        <div class="container">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6 py-6 pb-0 pt-lg-0">
-                    <h3 class="text-primary mb-3">I'm</h3>
-                    <h1 class="display-3 mb-3">Aishwarya S</h1>
-                    <h2 class="typed-text-output d-inline"></h2>
-                    <div class="typed-text d-none">Software Developer, Enthusiastic Learner</div>
-                    <div class="d-flex align-items-center pt-5">
-                        <!-- <a href="" class="btn btn-primary py-3 px-4 me-5">Resume</a> -->
-                        <!-- <button type="button" class="btn-play" data-bs-toggle="modal"
-                            data-src="https://www.youtube.com/embed/DWRcNpR6Kdc" data-bs-target="#videoModal">
-                            <span></span>
-                        </button> -->
-                        <!-- <h5 class="ms-4 mb-0 d-none d-sm-block">Play Video</h5> -->
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <img class="img-fluid" src="img/aish.png" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Header End -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const SECTIONS = [
+  { id:"work", menu:"Work", label:"My work", where:"The monitor",
+    title:"Work experience", lede:"Four years at Workhall, from Intern to Engineer.",
+    html:`<div class="role"><h3>Associate Software Engineer</h3><p class="when">Workhall, Coimbatore. August 2022 to now</p><ul>
+      <li>Integrated Zoho Books and Google Calendar APIs for 10+ enterprise clients.</li>
+      <li>Implemented RabbitMQ delayed scheduling for 1,000+ tasks/day.</li>
+      <li>Improved authentication and chat performance using Redis caching.</li>
+      <li>Architected a microservices-based distributed system with event-driven communication, improving scalability and high availability.</li>
+      <li>Automated job cleanup and retries using BullMQ.</li>
+      <li>Automated user provisioning through LDAP synchronization.</li>
+      <li>Delivered 30+ features and resolved 500+ issues.</li>
+      <li>Developed 50+ REST APIs using Node.js and Express.js.</li></ul></div>
+      <div class="role"><h3>Software Engineering Intern</h3><p class="when">Workhall. January to July 2022</p><ul>
+      <li>Built a real-time chat service with Socket.io and GraphQL for 500+ users at once.</li></ul></div>` },
+  { id:"projects", menu:"Projects", label:"Projects", where:"The laptop",
+    title:"Projects", lede:"Things I’ve built outside the day job.",
+    html:`<div class="role"><h3>utc-to-timezone</h3><p class="when">An npm package that converts UTC time to any timezone.</p>
+      <ul class="chips"><li><a href="https://www.npmjs.com/package/utc-to-timezone" target="_blank" rel="noopener">Try it</a></li></ul></div>
+      <div class="role"><h3>Automated GitHub profile</h3><p class="when">Automated GitHub README updates using GitHub Actions and Hashnode APIs to display the latest blog posts automatically.</p>
+      <ul class="chips"><li><a href="https://github.com/aishwaryasubbiah/fetch-hashnode-articles" target="_blank" rel="noopener">Code</a></li></ul></div>
+      <div class="role"><h3>Chat Application</h3><p class="when">A real-time chat app you can try live.</p>
+      <ul class="chips"><li><a href="https://chatapplication-qx3v.onrender.com/" target="_blank" rel="noopener">Try it</a></li><li><a href="https://github.com/aishwaryasubbiah/ChatApplication" target="_blank" rel="noopener">Code</a></li></ul></div>
+      <div class="role"><h3>SaveToGSlides</h3><p class="when">Built a Chrome extension to save text and images from websites directly to Google Slides for quick and easy presentation creation.</p>
+      <ul class="chips"><li><a href="https://github.com/aishwaryasubbiah/SaveToGSlides" target="_blank" rel="noopener">Code</a></li></ul></div>
 
+      ` },
+  { id:"skills", menu:"Skills", label:"Skills", where:"The whiteboard",
+    title:"Skills", lede:"My Technical Toolkit",
+    html:`<div class="role"><h3>Backend</h3><ul class="chips"><li>Node.js</li><li>Express.js</li><li>JavaScript</li><li>Java</li></ul></div>
+      <div class="role"><h3>Messaging & Streaming</h3><ul class="chips"><li>RabbitMQ</li><li>BullMQ</li><li>Socket.io</li><li>GraphQL</li></ul></div>
+      <div class="role"><h3>Databases</h3><ul class="chips"><li>MongoDB</li><li>Redis</li></ul></div>
+      <div class="role"><h3>Cloud & Infrastructure</h3><ul class="chips"><li>AWS</li><li>Microservices</li><li>Event-driven Architecture</li></ul></div>
+      <div class="role"><h3>Fundamentals</h3><ul class="chips"><li>Data structures and algorithms</li><li>System design</li></ul></div>
+      <div class="role"><h3>Other</h3><ul class="chips"><li>OAuth</li><li>LDAP</li></ul></div>` },
+  { id:"education", menu:"Education", label:"Education", where:"The frame on the wall",
+    title:"Education", lede:"Where I learned the fundamentals.",
+    html:`<div class="role"><h3>B.Tech, Information Technology</h3><p class="when">Thiagarajar College of Engineering, Madurai.</p><p class="when">2018 to 2022</p><ul>
+      <li>Graduated with a CGPA of 9.34 out of 10.</li></ul></div>` },
+  { id:"certifications", menu:"Certifications", label:"Certifications", where:"The certificate frame",
+    title:"Certifications", lede:"Hands-on cloud training I’ve completed.",
+    html:`<div class="role"><h3>AWS Cloud Quest: Cloud Practitioner</h3><p class="when">Amazon Web Services</p><ul>
+      <li>Built real solutions in a hands-on, role-play style course.</li></ul>
+      <ul class="chips"><li>EC2</li><li>S3</li><li>VPC</li><li>RDS</li><li>DynamoDB</li><li>IAM</li><li>EFS</li><li>Elastic Load Balancing</li></ul></div>` },
+  { id:"achievements", menu:"Achievements", label:"Achievements", where:"The trophy shelf",
+    title:"Achievements", lede:"Competitions and hackathons.",
+    html:`<div class="role"><h3>Tamil Nadu Student Innovators Programme 2019</h3><p class="when">Won ₹10,000 at the state-level competition by EDI-TN.</p></div>
+      <div class="role"><h3>Appathon 2020</h3><p class="when">Runner-up for building a personal website for Madurai MP Mr. S. Venkatesan.</p></div>
+      <div class="role"><h3>Innowah 2020</h3><p class="when">Shortlisted for top 5 with "Smart Translator" project, a chat app that helps deaf and mute people communicate.</p></div>
+      <div class="role"><h3>CERTATIM’19</h3><p class="when">Competed in a 24-hour hackathon at TCE.</p></div>` },
+  { id:"writing", menu:"Writing", label:"Writing", where:"The bookshelf",
+    title:"Writing and practice", lede:"20+ technical articles and 150+ LeetCode problems.",
+    html:`<div class="links">
+      <a href="https://aishwaryas.hashnode.dev/" target="_blank" rel="noopener">Hashnode <span>Blog</span></a>
+      <a href="https://medium.com/@aishwarya1712" target="_blank" rel="noopener">Medium <span>Blog</span></a>
+      <a href="https://www.geeksforgeeks.org/user/aishwaryasum/" target="_blank" rel="noopener">GeeksforGeeks <span>Blog</span></a>
+      <a href="https://leetcode.com/Aishwarya1712/" target="_blank" rel="noopener">LeetCode <span>Coding</span></a>
+      <a href="https://www.hackerrank.com/aishwaryasum" target="_blank" rel="noopener">HackerRank <span>Coding</span></a></div>` },
+  { id:"contact", menu:"Contact", label:"Contact", where:"The door",
+    title:"Let’s talk", lede:"",
+    html:`<div class="links">
+      <a href="mailto:aishwarya.sksn@gmail.com">aishwarya.sksn@gmail.com <span>Email</span></a>
+      <a href="https://github.com/aishwaryasubbiah" target="_blank" rel="noopener">GitHub <span>Profile</span></a>
+      <a href="https://www.linkedin.com/in/aishwarya-s-b87740171/" target="_blank" rel="noopener">LinkedIn <span>Profile</span></a></div>` }
+];
 
-    <!-- Video Modal Start -->
-    <!-- <div class="modal modal-video fade" id="videoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content rounded-0">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLabel">Youtube Video</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    // 16:9 aspect ratio
-                    <div class="ratio ratio-16x9">
-                        <iframe class="embed-responsive-item" src="" id="video" allowfullscreen allowscriptaccess="always"
-                            allow="autoplay"></iframe>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- Video Modal End -->
+function fallback(){
+  document.body.classList.add("no-gl");
+  document.getElementById("fallback").innerHTML = SECTIONS.map(s => `<section><h2>${s.title}</h2><p>${s.lede}</p>${s.html}</section>`).join("");
+}
 
+(function init(){
+  if (!window.THREE || !THREE.OrbitControls) return fallback();
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true }); if (!renderer.getContext()) throw 0; } catch(e){ return fallback(); }
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.getElementById("scene").appendChild(renderer.domElement);
 
-    <!-- About Start -->
-    <!-- <div class="container-xxl py-6" id="about">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="d-flex align-items-center mb-5">
-                        <div class="years flex-shrink-0 text-center me-4">
-                            <h1 class="display-1 mb-0">15</h1>
-                            <h5 class="mb-0">Years</h5>
-                        </div>
-                        <h3 class="lh-base mb-0">of working experience as a web designer & developer</h3>
-                    </div>
-                    <p class="mb-4">Stet no et lorem dolor et diam, amet duo ut dolore vero eos. No stet est diam rebum amet diam ipsum. Clita clita labore, dolor duo nonumy clita sit at, sed sit sanctus dolor eos.</p>
-                    <p class="mb-3"><i class="far fa-check-circle text-primary me-3"></i>Afordable Prices</p>
-                    <p class="mb-3"><i class="far fa-check-circle text-primary me-3"></i>High Quality Product</p>
-                    <p class="mb-3"><i class="far fa-check-circle text-primary me-3"></i>On Time Project Delivery</p>
-                    <a class="btn btn-primary py-3 px-5 mt-3" href="">Read More</a>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="row g-3 mb-4">
-                        <div class="col-sm-6">
-                            <img class="img-fluid rounded" src="img/about-1.jpg" alt="">
-                        </div>
-                        <div class="col-sm-6">
-                            <img class="img-fluid rounded" src="img/about-2.jpg" alt="">
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <h5 class="border-end pe-3 me-3 mb-0">Happy Clients</h5>
-                        <h2 class="text-primary fw-bold mb-0" data-toggle="counter-up">1234</h2>
-                    </div>
-                    <p class="mb-4">Stet no et lorem dolor et diam, amet duo ut dolore vero eos. No stet est diam amet diam ipsum clita labore dolor duo clita.</p>
-                    <div class="d-flex align-items-center mb-3">
-                        <h5 class="border-end pe-3 me-3 mb-0">Projects Completed</h5>
-                        <h2 class="text-primary fw-bold mb-0" data-toggle="counter-up">1234</h2>
-                    </div>
-                    <p class="mb-0">Stet no et lorem dolor et diam, amet duo ut dolore vero eos. No stet est diam amet diam ipsum clita labore dolor duo clita.</p>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- About End -->
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, .1, 100);
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x8a7a66, .75);
+  const sun = new THREE.DirectionalLight(0xfff3dd, .8);
+  sun.position.set(4, 9, 6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left:-8, right:8, top:8, bottom:-8 });
+  const lamp = new THREE.PointLight(0xffc27a, 0, 9, 1.4); lamp.position.set(-1.1, 2.55, -3.9);
+  scene.add(hemi, sun, lamp);
 
+  const cache = {};
+  const mat = c => cache[c] || (cache[c] = new THREE.MeshLambertMaterial({ color:c }));
+  function box(w, h, d, c, x, y, z, parent){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c)); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; (parent || scene).add(m); return m; }
+  function cyl(rt, rb, h, c, x, y, z, parent, seg=16){ const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat(c)); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; (parent || scene).add(m); return m; }
+  function canvasTex(w, h, draw){ const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); const t = new THREE.CanvasTexture(c); t.anisotropy = 4; return t; }
+  function screen(w, h, tex, x, y, z, ry, parent){ const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map:tex })); m.position.set(x, y, z); m.rotation.y = ry || 0; (parent || scene).add(m); return m; }
+  const groups = {};
+  const G = id => { const g = new THREE.Group(); g.userData.id = id; scene.add(g); groups[id] = g; return g; };
 
-    <!-- Expertise Start -->
-    <div class="container-xxl py-6 pb-5" id="skill">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <h1 class="display-5 mb-5">Skills & Experience</h1>
-                    <p class="mb-4">I am a Backend Engineer with 4 years of experience designing and building scalable, secure, and high-performance backend systems using Node.js, MongoDB, Redis, and Socket.IO. I specialize in developing robust RESTful APIs tailored to client requirements and building event-driven microservices that enable efficient and reliable system communication.
-I have hands-on experience integrating third-party services and implementing hybrid encryption techniques to ensure secure data handling and transmission. My work also includes developing real-time features such as chat systems, focusing on performance, scalability, and seamless user experience.
-I prioritize writing clean, maintainable, and well-structured code, with a strong emphasis on system design principles and scalability.</p>
-                    <h3 class="mb-4">My Skills</h3>
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                           <div class="skill mb-4">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="font-weight-bold"><i class='fab fa-node-js' style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Node JS</h6>
+  // Room shell
+  const wallMat = new THREE.MeshLambertMaterial(), floorMat = new THREE.MeshLambertMaterial();
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(10, .2, 10), floorMat); floor.position.y = -.1; floor.receiveShadow = true; scene.add(floor);
+  for (let i = -4.5; i <= 4.5; i += 1) box(.02, .01, 10, "#A87B52", i, .005, 0);
+  const back = new THREE.Mesh(new THREE.BoxGeometry(10, 5, .2), wallMat); back.position.set(0, 2.5, -5.1); back.receiveShadow = true; scene.add(back);
+  const left = new THREE.Mesh(new THREE.BoxGeometry(.2, 5, 10), wallMat); left.position.set(-5.1, 2.5, 0); left.receiveShadow = true; scene.add(left);
+  box(10, .25, .06, "#FFFFFF", 0, .12, -4.98); box(.06, .25, 10, "#FFFFFF", -4.98, .12, 0);
+  const rug = cyl(2.4, 2.4, .03, "#7C6CD6", .4, .02, -1.6, null, 40);
 
-<!--                                     <h6 class="font-weight-bold"><i class='fa fa-laptop-code' style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;HTML,CSS</h6> -->
-<!--                                    <h6 class="font-weight-bold">95%</h6> -->
-                                </div>
-<!--                         <div class="progress">
-                                    <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>  -->
-                            </div>
-                            <div class="skill mb-4">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="font-weight-bold"><i class="icon-mongodb" style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Mongo DB</h6>
-                                    <!-- <h6 class="font-weight-bold">85%</h6> -->
-                                </div>
-                                <!-- <div class="progress">
-                                    <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div> -->
-                            </div>
-                            <div class="skill mb-4">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="font-weight-bold"><i><img src="img/socket.png" style='width:30px;height:30px;color:#6244C5'></i>&nbsp;&nbsp;Socket.io</h6>
+  // Window
+  let windowTex;
+  const windowPlane = screen(2.3, 1.05, null, .5, 4.0, -4.98);
+  box(2.5, .08, .12, "#FFFFFF", .5, 3.44, -4.94); box(2.5, .08, .12, "#FFFFFF", .5, 4.56, -4.94);
+  box(.08, 1.2, .12, "#FFFFFF", -.72, 4.0, -4.94); box(.08, 1.2, .12, "#FFFFFF", 1.72, 4.0, -4.94); box(.06, 1.1, .08, "#FFFFFF", .5, 4.0, -4.93);
 
-                                    <!-- <h6 class="font-weight-bold">90%</h6> -->
-                                </div>
-                               <!-- <div class="progress">
-                                    <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div> -->
-                            </div>
-                           <div class="skill mb-4">
-                            
-                                <div class="d-flex justify-content-between">
-                                   <h6 class="font-weight-bold"><i class="icon-redis" style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Redis</h6>
-                                      <!-- <h6 class="font-weight-bold"><i class='fab fa-node-js' style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Node JS</h6> -->
-                                     <!-- <h6 class="font-weight-bold">90%</h6> -->
-                                </div>
-                                  <!-- <div class="progress">
-                                    <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div> -->
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="skill mb-4">
-                                <div class="d-flex justify-content-between">
-                                  <h6 class="font-weight-bold"><i class="fa fa-database" style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;RDBMS</h6>
-                                   <!--  <h6 class="font-weight-bold"><i class="fa fa-list" style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Data Structures</h6>
-                                    <h6 class="font-weight-bold">90%</h6> -->
-                                </div>
-                                <!-- <div class="progress">
-                                    <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div> -->
-                            </div>
-                            <div class="skill mb-4">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="font-weight-bold"><i class='fab fa-java' style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Java</h6>
-                                    <!-- <h6 class="font-weight-bold">95%</h6> -->
-                                </div>
-                                <!-- <div class="progress">
-                                    <div class="progress-bar bg-dark" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div> -->
-                            </div>
-                            <div class="skill mb-4">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="font-weight-bold"><i class="fab fa-js" style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Javascript</h6>                                    
-                                    <!-- <h6 class="font-weight-bold">85%</h6> -->
-                                </div>
-                                <!-- <div class="progress">
-                                    <div class="progress-bar bg-info" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div> -->
-                            </div>
-                           <div class="skill mb-4">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="font-weight-bold"><i class='fas fa-code' style='font-size:25px;color:#6244C5'></i>&nbsp;&nbsp;Data Structures and Algorithms (DSA)</h6>
-                                     <!-- <h6 class="font-weight-bold">85%</h6>  -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <ul class="nav nav-pills rounded border border-2 border-primary mb-5">
-                        <li class="nav-item w-50">
-                            <button class="nav-link w-100 py-3 fs-5 active" data-bs-toggle="pill" href="#tab-1">Experience</button>
-                        </li>
-                        <li class="nav-item w-50">
-                            <button class="nav-link w-100 py-3 fs-5" data-bs-toggle="pill" href="#tab-2">Education</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div id="tab-1" class="tab-pane fade show p-0 active">
-                            <div class="row gy-5 gx-4">
-                                <div class="col-sm-6">
-                                    <h5>Internship</h5>
-                                    <hr class="text-primary my-2">
-                                    <p class="text-primary mb-1">Jan 2022 - July 2022</p>
-                                    <h6 class="mb-0">Workhall, Chennai</h6>
-                                </div>
-                                <div class="col-sm-6">
-                                    <h5>Associate Software Engineer - Full Time</h5>
-                                    <hr class="text-primary my-2">
-                                    <p class="text-primary mb-1">August 2022 - Present</p>
-                                    <h6 class="mb-0">Workhall, Chennai</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="tab-2" class="tab-pane fade show p-0">
-                            <div class="row gy-5 gx-4">
-                                <div class="col-sm-6">
-                                    <h5>Schooling</h5>
-                                    <hr class="text-primary my-2">
-                                    <p class="text-primary mb-1">2005 - 2018</p>
-                                    <h6 class="mb-0">T.M.H.N.U.Matric.Hr.Sec.School, Theni</h6>
-                                </div>
-                                <div class="col-sm-6">
-                                    <h5>B.Tech - Information Technology</h5>
-                                    <hr class="text-primary my-2">
-                                    <p class="text-primary mb-1">2018 - 2022</p>
-                                    <h6 class="mb-0">Thiagarajar College of Engineering, Madurai</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Expertise End -->
+  // Desk and chair
+  box(4.2, .12, 1.7, "#F2F2EE", .5, 1.5, -4.05);
+  [[-1.5,-4.75],[2.5,-4.75],[-1.5,-3.35],[2.5,-3.35]].forEach(([x,z]) => box(.1, 1.45, .1, "#3C3C3C", x, .72, z));
+  const chair = new THREE.Group(); scene.add(chair);
+  box(1, .14, 1, "#2F3A4A", 0, 1.0, 0, chair); box(1, 1.1, .14, "#2F3A4A", 0, 1.62, .48, chair);
+  cyl(.06, .06, .9, "#888888", 0, .5, 0, chair); cyl(.5, .5, .06, "#555555", 0, .05, 0, chair);
+  chair.position.set(.35, 0, -2.75); chair.rotation.y = .25;
 
+  // Lamp and mug
+  cyl(.22, .26, .06, "#2F2F2F", -1.1, 1.59, -4.35); cyl(.03, .03, .9, "#2F2F2F", -1.1, 2.05, -4.35);
+  const shade = new THREE.Mesh(new THREE.ConeGeometry(.32, .34, 20, 1, true), new THREE.MeshLambertMaterial({ color:0xF5B82E, side:THREE.DoubleSide, emissive:0x000000 }));
+  shade.position.set(-1.1, 2.55, -4.2); shade.rotation.x = .5; scene.add(shade);
+  cyl(.13, .12, .26, "#E8564A", 1.0, 1.69, -3.5);
 
-    <!-- Service Start -->
-    <div class="container-fluid bg-light my-5 py-6" id="service">
-        <div class="container">
-            <div class="row g-5 mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="col-lg-6">
-                    <h1 class="display-5 mb-0">Achievements</h1>
-                </div>
-                <!-- <div class="col-lg-6 text-lg-end">
-                    <a class="btn btn-primary py-3 px-5" href="">Hire Me</a>
-                </div> -->
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item d-flex flex-column flex-sm-row bg-white rounded h-100 p-4 p-lg-5">
-                        <div class="bg-icon flex-shrink-0 mb-3">
-                            <i class="fas fa-gopuram fa-2x text-dark"></i>
-                        </div>
-                        <div class="ms-sm-4">
-                            <h4 class="mb-3">TamilNadu Student Innovators Programme</h4>
-                            <span>We, a team of three members won a cash award of <b>Rs.10,000</b> in the <b>state-level competition</b> held under Tamil Nadu Student Innovators Programme 2019 organized by Entrepreneurship Development and Innovation Institute(EDI-TN).</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item d-flex flex-column flex-sm-row bg-white rounded h-100 p-4 p-lg-5">
-                        <div class="bg-icon flex-shrink-0 mb-3">
-                            <i class="fas fa-mobile-alt fa-2x text-dark"></i>
-                        </div>
-                        <div class="ms-sm-4">
-                            <h4 class="mb-3">Appathon 2020</h4>
-                            <span>We, a team of three members won the <b>runner-up prize</b>(Third prize) which was conducted by Madurai MP Mr.S.Venkatesan for developing a personal website for him.</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item d-flex flex-column flex-sm-row bg-white rounded h-100 p-4 p-lg-5">
-                        <div class="bg-icon flex-shrink-0 mb-3">
-                            <i class="fa fa-laptop-code fa-2x text-dark"></i>
-                        </div>
-                        <div class="ms-sm-4">
-                            <h4 class="mb-3">Innowah 2020</h4>
-                            <span>We, a team of four members with a project "Smart Translator" were shortlisted for the <b>top 5 projects</b> in the <b>college-level competition</b>. Smart Translator is a chatting application to bridge the communication gap between normal individuals and deaf and mute communities.</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item d-flex flex-column flex-sm-row bg-white rounded h-100 p-4 p-lg-5">
-                        <div class="bg-icon flex-shrink-0 mb-3">
-                            <i class="fa fa-rocket fa-2x text-dark"></i>
-                        </div>
-                        <div class="ms-sm-4">
-                            <h4 class="mb-3">CERTATIM’19</h4>
-                            <!-- <h6 class="mb-3">Start from <span class="text-primary">$199</span></h6> -->
-                            <span>We, a team of two members participated in a <b>24-hour inter-departmental hackathon</b> conducted at Thiagarajar College of Engineering.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Service End -->
+  // Monitor: work
+  const gWork = G("work");
+  box(.14, .55, .14, "#2A2A2A", .2, 1.83, -4.55, gWork); box(.7, .04, .42, "#2A2A2A", .2, 1.58, -4.5, gWork);
+  box(1.95, 1.18, .08, "#1C1C1C", .2, 2.62, -4.55, gWork);
+  // Monitor screen: work experience
+  screen(1.82, 1.05, canvasTex(1456, 840, (g, w, h) => {
+    g.fillStyle = "#14172A"; g.fillRect(0, 0, w, h);
+    g.fillStyle = "#1F2442"; g.fillRect(0, 0, w, 64);
+    ["#FF6B6B","#FFD93D","#6BCB77"].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(34 + i*36, 32, 11, 0, 7); g.fill(); });
+    g.fillStyle = "#8B93BD"; g.font = "500 26px ui-monospace, Menlo, monospace"; g.fillText("experience.md", 150, 41);
+    g.fillStyle = "#F2F0FF"; g.font = "700 64px system-ui, sans-serif"; g.fillText("Associate Software Engineer", 60, 160);
+    g.fillStyle = "#9AA3C7"; g.font = "400 32px system-ui, sans-serif"; g.fillText("Workhall · Coimbatore · Aug 2022 to now", 60, 212);
+    [["30+","Features"],["10+","enterprise clients"],["50+","APIs built"],["500+","issues fixed"]].forEach(([n, l], i) => {
+      const x = 60 + i*340; g.fillStyle = "#1F2442"; g.fillRect(x, 252, 310, 140);
+      g.fillStyle = "#FFC94A"; g.font = "800 58px system-ui, sans-serif"; g.fillText(n, x + 24, 324);
+      g.fillStyle = "#B9C0E0"; g.font = "400 26px system-ui, sans-serif"; g.fillText(l, x + 24, 366);
+    });
+    g.font = "400 32px system-ui, sans-serif";
+    ["Job scheduling on RabbitMQ that runs on time","Event-driven microservices built to scale","Integrated Zoho Books and Google Calendar APIs for 10+ enterprise clients.","Redis caching, BullMQ retries and LDAP user sync"].forEach((t, i) => {
+      g.fillStyle = "#7AA2F7"; g.fillText("›", 60, 470 + i*58); g.fillStyle = "#E3E6F5"; g.fillText(t, 100, 470 + i*58);
+    });
+    g.fillStyle = "#2A3050"; g.fillRect(60, 712, w - 120, 2);
+    g.fillStyle = "#9AA3C7"; g.font = "400 28px system-ui, sans-serif";
+    g.fillText("Internship, Jan to Jul 2022. Real-time chat for 500+ users with Socket.io and GraphQL.", 60, 770);
+  }), .2, 2.62, -4.505, 0, gWork);
+
+  // Laptop: projects
+  const gProj = G("projects");
+  box(1.0, .05, .7, "#C9CDD2", 1.85, 1.585, -3.85, gProj);
+  const lid = new THREE.Group(); lid.position.set(1.85, 1.61, -4.2); lid.rotation.x = -.28; gProj.add(lid);
+  box(1.0, .66, .04, "#C9CDD2", 0, .33, 0, lid);
+  // Laptop screen: projects list
+  screen(.92, .58, canvasTex(920, 580, (g, w, h) => {
+    g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, w, h);
+    g.fillStyle = "#ECEAF5"; g.fillRect(0, 0, w, 54);
+    g.fillStyle = "#FFFFFF"; g.fillRect(130, 12, w - 160, 30);
+    ["#FF6B6B","#FFD93D","#6BCB77"].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(28 + i*28, 27, 9, 0, 7); g.fill(); });
+    g.fillStyle = "#6B6880"; g.font = "400 20px system-ui, sans-serif"; g.fillText("github.com/aishwaryasubbiah", 146, 34);
+    g.fillStyle = "#1E1B2E"; g.font = "800 40px system-ui, sans-serif"; g.fillText("Projects", 36, 112);
+    [["utc-to-timezone","npm package for timezone conversion","#D9822B"], ["Github Profile Automation","AI that finds the change behind an error","#3D7BE0"], ["Chat Application","Real-time chat app, live on Render","#6A44E0"],["SaveToGSlides","Chrome extension to save text and images to Google Slides","#2F8D46"]].forEach(([n, d, c], i) => {
+      const y = 150 + i*84; g.fillStyle = c; g.fillRect(36, y, 8, 64);
+      g.fillStyle = "#1E1B2E"; g.font = "700 28px system-ui, sans-serif"; g.fillText(n, 60, y + 26);
+      g.fillStyle = "#5C5875"; g.font = "400 22px system-ui, sans-serif"; g.fillText(d, 60, y + 58);
+    });
+  }), 0, .33, .022, 0, lid);
+
+  // Whiteboard: skills
+  const gSkills = G("skills");
+  box(2.05, 1.35, .06, "#B9B9B9", 3.75, 3.0, -4.97, gSkills);
+  screen(1.95, 1.25, canvasTex(780, 500, (g, w, h) => {
+    g.fillStyle = "#FBFBF8"; g.fillRect(0, 0, w, h);
+    const notes = ["Node.js","Express","JavaScript","Java","MongoDB","Redis","RabbitMQ","BullMQ","System Design","GraphQL","AWS","OAuth","LDAP","DSA","Microservices"];
+    const cols = ["#FFE58F","#B5F5EC","#FFD6E7","#D3ADF7","#B7EB8F"];
+    notes.forEach((n, i) => {
+      const cx = 30 + (i % 5) * 148, cy = 28 + Math.floor(i / 5) * 154;
+      g.save(); g.translate(cx + 64, cy + 64); g.rotate(((i*37) % 9 - 4) * .015);
+      g.fillStyle = cols[i % cols.length]; g.fillRect(-64, -64, 128, 128);
+      g.fillStyle = "#2B2B2B"; g.font = `600 ${n.length > 9 ? 17 : 22}px system-ui, sans-serif`; g.textAlign = "center"; g.fillText(n, 0, 8);
+      g.restore();
+    });
+  }), 3.75, 3.0, -4.935, 0, gSkills);
+
+  // Diploma: education
+  const gEdu = G("education");
+  box(1.45, 1.05, .06, "#5A3E2B", -3, 3.2, -4.97, gEdu);
+  screen(1.28, .88, canvasTex(512, 352, (g, w, h) => {
+    g.fillStyle = "#FBF6EA"; g.fillRect(0, 0, w, h);
+    g.strokeStyle = "#C9A55C"; g.lineWidth = 6; g.strokeRect(14, 14, w - 28, h - 28);
+    g.fillStyle = "#3A2E20"; g.textAlign = "center";
+    g.font = "700 38px Georgia, serif"; g.fillText("B.Tech", w/2, 104);
+    g.font = "24px Georgia, serif"; g.fillText("Information Technology", w/2, 146);
+    g.font = "20px Georgia, serif"; g.fillText("Thiagarajar College of Engineering", w/2, 196);
+    g.fillText("2018 to 2022  ·  CGPA 9.34/10", w/2, 230);
+    g.fillStyle = "#C0392B"; g.beginPath(); g.arc(w/2, 288, 26, 0, 7); g.fill();
+  }), -3, 3.2, -4.935, 0, gEdu);
+
+    // Certificate frame: certifications (its own section)
+  const gCert = G("certifications");
+  box(1.0, .72, .06, "#2B2B2B", -1.6, 3.1, -4.97, gCert);
+  screen(.9, .62, canvasTex(580, 400, (g, w, h) => {
+    g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, w, h);
+    g.fillStyle = "#FF9900"; g.fillRect(0, 0, w, 18);
+    g.fillStyle = "#232F3E"; g.textAlign = "center";
+    g.font = "700 46px system-ui, sans-serif"; g.fillText("AWS Cloud Quest", w/2, 120);
+    g.font = "500 34px system-ui, sans-serif"; g.fillText("Cloud Practitioner", w/2, 176);
+    g.fillStyle = "#6B7280"; g.font = "400 24px system-ui, sans-serif";
+    g.fillText("EC2 · S3 · VPC · RDS", w/2, 260); g.fillText("DynamoDB · IAM · ELB", w/2, 300);
+  }), -1.6, 3.1, -4.935, 0, gCert);
+
+  // Bookshelf: writing
+  const gWrite = G("writing");
+  box(.08, 3.6, 2.4, "#8A5A3B", -4.96, 1.8, -1, gWrite);
+  box(.8, 3.6, .08, "#8A5A3B", -4.6, 1.8, -2.2, gWrite); box(.8, 3.6, .08, "#8A5A3B", -4.6, 1.8, .2, gWrite);
+  [.05, 1.2, 2.4, 3.56].forEach(y => box(.8, .08, 2.4, "#8A5A3B", -4.6, y, -1, gWrite));
+  const bookCols = ["#E8564A","#3D7BE0","#F5B82E","#3FA66B","#9B59D0","#2BB3B1","#EF7FA8","#4A4A6A"];
+  let bs = 11; const br = () => (bs = (bs*9301 + 49297) % 233280) / 233280;
+  function fillBooks(y, z, zEnd){
+    while (z < zEnd) {
+      const t = .12 + br()*.12, h = .7 + br()*.32;
+      if (z + t > zEnd + .07) break;
+      const b = box(.55, h, t - .02, bookCols[Math.floor(br()*bookCols.length)], -4.62, y + h/2, z + t/2, gWrite);
+      if (br() > .85) { b.rotation.x = .18; b.position.y -= .03; }
+      z += t + (br() > .8 ? .2 : 0);
+    }
+  }
+  fillBooks(.09, -2.12, .05); fillBooks(2.44, -2.12, .05);
+  // Labelled books on the middle shelf: one per writing and practice profile
+  let bz = -2.12;
+  [["Hashnode","#2962FF","#FFFFFF"],["Medium","#1A1A1A","#FFFFFF"],["GeeksforGeeks","#2F8D46","#FFFFFF"],["LeetCode 150+","#F5A623","#1A1A1A"],["HackerRank","#1BA94C","#FFFFFF"]].forEach(([name, col, ink]) => {
+    const t = .3, h = 1.04, d = .6;
+    box(d, h, t - .02, col, -4.6, 1.24 + h/2, bz + t/2, gWrite);
+    const spine = new THREE.Mesh(new THREE.PlaneGeometry(h - .1, t - .07), new THREE.MeshBasicMaterial({ map: canvasTex(640, 150, (g, w, hh) => {
+      g.fillStyle = col; g.fillRect(0, 0, w, hh);
+      g.fillStyle = ink; g.font = "700 64px system-ui, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(name, w/2, hh/2 + 4);
+    }) }));
+    spine.position.set(-4.6 + d/2 + .003, 1.24 + h/2, bz + t/2);
+    spine.rotation.set(0, Math.PI/2, -Math.PI/2); // face the room, text running down the spine
+    gWrite.add(spine);
+    bz += t + .01;
+  });
+  fillBooks(1.24, bz + .05, .05);
+  // Label on the front edge of the middle shelf
+  screen(1.3, .14, canvasTex(1040, 112, (g, w, h) => {
+    g.fillStyle = "#F5E6B8"; g.fillRect(0, 0, w, h);
+    g.fillStyle = "#3A2E20"; g.font = "700 56px system-ui, sans-serif"; g.textAlign = "center"; g.fillText("20+ articles · 150+ problems", w/2, 76);
+  }), -4.195, 1.18, -1, Math.PI/2, gWrite);
 
 
-    <!-- Projects Start -->
-    <div class="container-xxl py-6 pt-5" id="project">
-        <div class="container">
-            <div class="row g-5 mb-5 align-items-center wow fadeInUp" data-wow-delay="0.1s">
-                <div class="col-lg-6">
-                    <h1 class="display-5 mb-0">My Works</h1>
-                </div>
-                <div class="col-lg-6 text-lg-end">
-                    <ul class="list-inline mx-n3 mb-0" id="portfolio-flters">
-                        <li class="mx-3 active" data-filter="*">All</li>
-                        <li class="mx-3" data-filter=".projects">Projects</li>
-                        <li class="mx-3" data-filter=".first">Blogs</li>
-                        <li class="mx-3" data-filter=".second">Accomplishments</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row g-4 portfolio-container wow fadeInUp" data-wow-delay="0.1s">
-                  <!-- SaveToGSlides Chrome extension  -->
-                  <div class="col-lg-4 col-md-6 portfolio-item projects">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/ChromeExt.png" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://github.com/aishwaryasubbiah/SaveToGSlides" target="_blank"><i class="fa fa-code"></i></a>
-                            <!-- <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://www.youtube.com/shorts/aKA_nX40d_U" target="_blank"><i class="fa fa-play-circle" style="font-size:20px"></i></a> -->
-                        </div>
-                    </div>
-                </div>
-                <!-- Chat application  -->
-                <div class="col-lg-4 col-md-6 portfolio-item projects">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/ChatApp.png" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://github.com/aishwaryasubbiah/ChatApplication" target="_blank"><i class="fa fa-code"></i></a>
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://chatapplication-qx3v.onrender.com/" target="_blank"><i class="fa fa-link" style="font-size:20px"></i></a>
-                            <!-- <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://www.youtube.com/shorts/aKA_nX40d_U" target="_blank"><i class="fa fa-play-circle" style="font-size:20px"></i></a> -->
-                        </div>
-                    </div>
-                </div>
+  // Trophy shelf: achievements
+  const gAch = G("achievements");
+  box(.6, .08, 1.9, "#8A5A3B", -4.7, 2.4, 1.3, gAch);
 
-                <!-- Smart Translator -->
-                <div class="col-lg-4 col-md-6 portfolio-item projects">
-                    <div class="portfolio-img rounded overflow-hidden">    
-                        <img class="img-fluid" src="img/project1.png" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://drive.google.com/file/d/13FNXC-clhBvNNqxyhZHzzHswPYLjveBa/view?usp=sharing" target="_blank"><i class="fa fa-play-circle" style="font-size:20px"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Bigg Boss website  -->
-                <div class="col-lg-4 col-md-6 portfolio-item projects">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/project2.png" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://github.com/nextbigthing5317/Bigbossquiz" target="_blank"><i class="fa fa-code"></i></a>
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://www.youtube.com/shorts/aKA_nX40d_U" target="_blank"><i class="fa fa-play-circle" style="font-size:20px"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6 portfolio-item first">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/gfg.png" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://auth.geeksforgeeks.org/user/aishwaryasum/articles" target="_blank"><i class="fa fa-link"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 portfolio-item first">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/hashnode.png" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://aishwaryas.hashnode.dev/" target="_blank"><i class="fa fa-link"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 portfolio-item first">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/medium.png" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://medium.com/@aishwarya1712" target="_blank"><i class="fa fa-link"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 portfolio-item second">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/Tnsiprize.jpeg" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="img/Tnsiprize.jpeg" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                            <!-- <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href=""><i class="fa fa-link"></i></a> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 portfolio-item second">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/TnsiBootcamp.jpeg" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="img/TnsiBootcamp.jpeg" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                            <!-- <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href=""><i class="fa fa-link"></i></a> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 portfolio-item second">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/ssn_hackathon.jpeg" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="img/ssn_hackathon.jpeg" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                            <!-- <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href=""><i class="fa fa-link"></i></a> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 portfolio-item second">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/hackathon.jpeg" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="img/hackathon.jpeg" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                            <!-- <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href=""><i class="fa fa-link"></i></a> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 portfolio-item second">
-                    <div class="portfolio-img rounded overflow-hidden">
-                        <img class="img-fluid" src="img/Kalaicharal.jpeg" alt="">
-                        <div class="portfolio-btn">
-                            <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="img/Kalaicharal.jpeg"
-                                data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                            <!-- <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href=""><i class="fa fa-link"></i></a> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Projects End -->
+  // Draws text onto a small plate texture
+  const plateTex = (line1, line2) => canvasTex(320, 120, (g, w, h) => {
+    g.fillStyle = "#2B2B2B"; g.fillRect(0, 0, w, h);
+    g.strokeStyle = "#D4AF37"; g.lineWidth = 6; g.strokeRect(5, 5, w - 10, h - 10);
+    g.fillStyle = "#F5E6B8"; g.textAlign = "center";
+    g.font = "700 40px system-ui, sans-serif"; g.fillText(line1, w/2, 56);
+    g.font = "500 28px system-ui, sans-serif"; g.fillText(line2, w/2, 96);
+  });
 
+  [
+    { c:"#F5B82E", z:.5,  s:1.0,  t1:"TNSI", t2:"2019 · Winner" },
+    { c:"#C0C6CC", z:1.25, s:.85, t1:"Appathon", t2:"2020 · Runner-up" },
+    { c:"#CD7F32", z:1.95, s:.75, t1:"Innowah", t2:"2020 · Top 5" }
+  ].forEach(({ c, z, s, t1, t2 }) => {
+    const top = 2.44;                        // top surface of the shelf
+    const bw = .44*s, bh = .2*s, bd = .32*s; // base width (along wall), height, depth
+    // Square base, so the plate has a flat face to sit on
+    box(bd, bh, bw, "#3C3C3C", -4.7, top + bh/2, z, gAch);
+    // Name plate on the front face of the base, turned to face the room
+    screen(bw * .9, bh * .8, plateTex(t1, t2), -4.7 + bd/2 + .003, top + bh/2, z, Math.PI/2, gAch);
+    // Stem and cup on top of the base
+    cyl(.05*s, .07*s, .3*s, c, -4.7, top + bh + .15*s, z, gAch);
+    cyl(.26*s, .1*s, .4*s, c, -4.7, top + bh + .3*s + .2*s, z, gAch);
+  });
 
-    <!-- Copyright Start -->
-     <div class="container-fluid bg-dark text-white py-4">
-            <div class="container">
-                <div class="row" style="margin-left: 450px;">
-                <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://www.linkedin.com/in/aishwarya-s-b87740171/" target="_blank"><i class="bi bi-linkedin" style="font-size:25px"></i></a>
-                <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://www.hackerrank.com/aishwaryasum" target="_blank"><i class="fab fa-hackerrank" style="font-size:25px"></i></a>
-                <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://leetcode.com/Aishwarya1712/" target="_blank"><iconify-icon icon="simple-icons:leetcode" style="font-size:25px"></iconify-icon></a>
-                <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://www.geeksforgeeks.org/user/aishwaryasum/" target="_blank"><iconify-icon icon="simple-icons:geeksforgeeks" style="font-size:25px"></iconify-icon></a>
-                <a class="btn btn-lg-square btn-outline-secondary border-2 mx-1" href="https://github.com/aishwaryasubbiah" target="_blank"><i class="bi bi-github" style="font-size:25px"></i></a>
+  // Door: contact
+  const gDoor = G("contact");
+  box(.12, 3.1, 1.75, "#FFFFFF", -4.99, 1.55, 3.6, gDoor);
+  box(.1, 2.95, 1.55, "#B07A4F", -4.95, 1.48, 3.6, gDoor);
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(.08, 12, 10), mat("#D4AF37")); knob.position.set(-4.86, 1.4, 3.05); gDoor.add(knob);
+  // Contact card on the door
+  screen(1.0, 1.25, canvasTex(640, 800, (g, w, h) => {
+    g.fillStyle = "#FFFDF6"; g.fillRect(0, 0, w, h);
+    g.strokeStyle = "#5B3FC4"; g.lineWidth = 10; g.strokeRect(10, 10, w - 20, h - 20);
+    g.textAlign = "center"; g.fillStyle = "#5B3FC4"; g.font = "800 96px system-ui, sans-serif"; g.fillText("Hello!", w/2, 170);
+    [["Email","aishwarya.sksn@gmail.com"]].forEach(([k, v], i) => {
+      const y = 340 + i*150; g.fillStyle = "#8A8FA0"; g.font = "600 26px system-ui, sans-serif"; g.fillText(k.toUpperCase(), w/2, y);
+      g.fillStyle = "#1D2A24"; g.font = `700 ${v.length > 20 ? 34 : 40}px system-ui, sans-serif`; g.fillText(v, w/2, y + 50);
+    });
+  }), -4.89, 2.0, 3.6, Math.PI/2, gDoor);
 
-                    <!-- <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom text-secondary" href="#">Your Site Name</a>, All Right Reserved.
-                    </div> -->
-                    <!-- <div class="col-md-6 text-center text-md-end">
-                        /*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/
-                        Designed By <a class="border-bottom text-secondary" href="https://htmlcodex.com">HTML Codex</a>
-                        <br>Distributed By: <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                    </div> -->
-                </div>
-            </div>
-        </div>
-    </div> 
-    <!-- Copyright End -->
+  // Plant
+  cyl(.3, .24, .6, "#D9822B", 4.3, .3, -4.25);
+  [[0,.95,0,.38],[.22,1.2,.1,.3],[-.2,1.15,-.05,.32],[.05,1.45,.05,.26]].forEach(([x,y,z,r]) => {
+    const m = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), mat("#3E9B4F")); m.position.set(4.3 + x, y, -4.25 + z); m.castShadow = true; scene.add(m); });
 
+  // Theme: day and night
+  function applyTheme(){
+    const t = document.documentElement.dataset.theme;
+    const dark = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    wallMat.color.set(dark ? "#3A4A52" : "#E6EFE9"); floorMat.color.set(dark ? "#5E4632" : "#C99B6D");
+    hemi.intensity = dark ? .3 : .75; sun.intensity = dark ? .12 : .8; lamp.intensity = dark ? 2.2 : 0;
+    shade.material.emissive.set(dark ? 0x7a5200 : 0x000000);
+    windowTex = canvasTex(460, 210, (g, w, h) => {
+      const gr = g.createLinearGradient(0, 0, 0, h);
+      if (dark) { gr.addColorStop(0, "#0B1430"); gr.addColorStop(1, "#24305C"); } else { gr.addColorStop(0, "#7EC8F2"); gr.addColorStop(1, "#CDEBFA"); }
+      g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      if (dark) { g.fillStyle = "#F4F1D0"; g.beginPath(); g.arc(360, 62, 26, 0, 7); g.fill(); for (let i = 0; i < 40; i++) { g.fillRect((i*97) % w, (i*53) % (h-40), 2, 2); } }
+      else { g.fillStyle = "#fff"; [[90,70,30],[120,62,36],[150,74,26],[320,110,22],[344,104,28]].forEach(([x,y,r]) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }); }
+      g.fillStyle = dark ? "#1B3A2A" : "#5FAE58"; g.beginPath(); g.ellipse(120, h + 40, 200, 90, 0, 0, 7); g.ellipse(380, h + 60, 180, 100, 0, 0, 7); g.fill();
+    });
+    windowPlane.material.map = windowTex; windowPlane.material.needsUpdate = true;
+  }
+  applyTheme();
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+  // Camera
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  Object.assign(controls, { enableDamping:true, dampingFactor:.08, enablePan:false, minDistance:1.2, maxDistance:24,
+    minAzimuthAngle:-.25, maxAzimuthAngle:1.62, minPolarAngle:.45, maxPolarAngle:1.56, rotateSpeed:.5 });
+  const HOME_T = new THREE.Vector3(-.3, 1.7, -.6);
+  const homePos = () => { const m = innerWidth < 700 ? 1.45 : 1; return new THREE.Vector3(10.5*m, 8.2*m, 10.5*m).add(HOME_T); };
+  // Close-up camera views, near enough to read the text on each object
+  const VIEWS = {
+    work:{ t:[.2,2.62,-4.5], c:[.25,2.75,-1.6] },
+    projects:{ t:[1.85,1.85,-4.05], c:[2.0,2.55,-2.45] },
+    skills:{ t:[3.75,3.0,-4.9], c:[3.6,3.0,-2.2] },
+    education:{ t:[-3,3.2,-4.9], c:[-2.9,3.15,-2.4] },
+    certifications:{ t:[-1.6,3.1,-4.9], c:[-1.55,3.05,-2.8] },
+    achievements:{ t:[-4.6,2.75,1.25], c:[-2.5,2.95,1.35] },
+    writing:{ t:[-4.5,1.8,-1.1], c:[-1.9,2.0,-1.0] },
+    contact:{ t:[-4.9,2.0,3.6], c:[-2.3,2.2,3.65] }
+  };
+  let anim = null;
+  const ease = k => k < .5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3)/2;
+  function flyTo(t, c, dur){ anim = { fT:controls.target.clone(), tT:t, fP:camera.position.clone(), tP:c, t0:performance.now(), dur: reduce ? 0 : dur }; }
+  controls.addEventListener("start", () => { anim = null; });
+  camera.position.copy(homePos()).multiplyScalar(reduce ? 1 : 1.5); controls.target.copy(HOME_T);
+  flyTo(HOME_T.clone(), homePos(), 1800);
 
+  // Labels and menu
+  const labelsHost = document.getElementById("labels"), menu = document.getElementById("menu");
+  const labelAt = { work:[.2,3.45,-4.5], projects:[1.85,2.4,-4.0], skills:[3.75,3.9,-4.9], education:[-3,4.0,-4.9], certifications:[-1.6,3.7,-4.9],
+    achievements:[-4.6,3.6,1.3], writing:[-4.5,3.9,-1], contact:[-4.9,3.4,3.6] };
+  SECTIONS.forEach(s => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "hot";
+    b.innerHTML = `<span class="ping"></span>${s.label}`;
+    b.onclick = () => open(s.id);
+    b.onmouseenter = () => { hoverId = s.id; }; b.onmouseleave = () => { if (hoverId === s.id) hoverId = null; };
+    labelsHost.appendChild(b); s.el = b; s.pos = new THREE.Vector3(...labelAt[s.id]);
+    const m = document.createElement("button"); m.type = "button"; m.textContent = s.menu; m.onclick = () => open(s.id);
+    menu.appendChild(m); s.menuEl = m;
+  });
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/typed/typed.min.js"></script>
-    <script src="lib/counterup/counterup.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/isotope/isotope.pkgd.min.js"></script>
-    <script src="lib/lightbox/js/lightbox.min.js"></script>
+  const panelBody = document.getElementById("panelBody");
+  let activeId = null, hoverId = null, lastFocus = null;
+  function open(id){
+    const s = SECTIONS.find(x => x.id === id);
+    if (!activeId) lastFocus = document.activeElement;
+    activeId = id;
+    const v = VIEWS[id], t = new THREE.Vector3(...v.t), c = new THREE.Vector3(...v.c);
+    if (innerWidth < 700) {
+      c.sub(t).multiplyScalar(1.9).add(t);
+      const dy = t.distanceTo(c) * .2; t.y -= dy; c.y -= dy;
+    } else {
+      const right = t.clone().sub(c).cross(new THREE.Vector3(0, 1, 0)).normalize().multiplyScalar(t.distanceTo(c) * .18);
+      t.add(right); c.add(right);
+    }
+    flyTo(t, c, 1200);
+    panelBody.innerHTML = `<h2 id="panel-title" tabindex="-1">${s.title}</h2><p class="lede">${s.lede}</p>${s.html}`;
+    document.getElementById("panel").scrollTop = 0;
+    document.body.classList.add("panel-open");
+    SECTIONS.forEach(x => x.menuEl.setAttribute("aria-current", x.id === id ? "true" : "false"));
+    document.getElementById("panel-title").focus({ preventScroll:true });
+  }
+  function closePanel(){
+    if (!activeId) return;
+    activeId = null;
+    document.body.classList.remove("panel-open");
+    SECTIONS.forEach(x => x.menuEl.setAttribute("aria-current", "false"));
+    flyTo(HOME_T.clone(), homePos(), 1200);
+    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll:true });
+  }
+  document.getElementById("closeBtn").onclick = closePanel;
+  addEventListener("keydown", e => { if (e.key === "Escape") closePanel(); });
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+  // Click objects in the room
+  const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(), canvas = renderer.domElement;
+  const pickables = Object.values(groups);
+  function pick(e){
+    ptr.set((e.clientX/innerWidth)*2 - 1, -(e.clientY/innerHeight)*2 + 1);
+    ray.setFromCamera(ptr, camera);
+    const h = ray.intersectObjects(pickables, true)[0];
+    if (!h) return null;
+    let o = h.object; while (o && !o.userData.id) o = o.parent;
+    return o ? o.userData.id : null;
+  }
+  let down = null;
+  canvas.addEventListener("pointerdown", e => { down = { x:e.clientX, y:e.clientY }; });
+  canvas.addEventListener("pointerup", e => {
+    if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 6) { const id = pick(e); if (id) open(id); }
+    down = null;
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse" || down) return;
+    hoverId = pick(e); canvas.style.cursor = hoverId ? "pointer" : "grab";
+  });
+
+  addEventListener("resize", () => { camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+
+  const v = new THREE.Vector3();
+  function frame(){
+    const now = performance.now();
+    if (anim) {
+      const k = anim.dur ? Math.min(1, (now - anim.t0)/anim.dur) : 1, e = ease(k);
+      camera.position.lerpVectors(anim.fP, anim.tP, e); controls.target.lerpVectors(anim.fT, anim.tT, e);
+      if (k >= 1) anim = null;
+    }
+    controls.update();
+    renderer.render(scene, camera);
+    SECTIONS.forEach(s => {
+      v.copy(s.pos).project(camera);
+      if (v.z > 1) { s.el.style.visibility = "hidden"; return; }
+      s.el.style.visibility = "visible";
+      s.el.style.transform = `translate(${((v.x*.5+.5)*innerWidth).toFixed(1)}px,${((-v.y*.5+.5)*innerHeight).toFixed(1)}px) translate(-50%,-100%)`;
+      s.el.classList.toggle("lit", s.id === hoverId);
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 </body>
-
 </html>
